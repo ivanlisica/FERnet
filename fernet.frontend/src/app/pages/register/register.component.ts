@@ -297,13 +297,12 @@ export class RegisterComponent {
       this.loading = true;
       this.errorMessage = '';
 
-      // Uklanjamo confirmPassword pre slanja
       const { confirmPassword, ...userData } = this.registerForm.value;
 
       this.authService.register(userData).subscribe({
         next: () => {
           this.loading = false;
-          this.router.navigate(['/dashboard']); // ili bilo koja ruta nakon uspešne registracije
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           this.loading = false;

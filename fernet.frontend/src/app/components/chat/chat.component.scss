@@ -1,0 +1,309 @@
+// user-chat.component.scss
+
+// ----- Varijable -----
+$primary-color: #3498db; // Plava za glavne akcije
+$secondary-color: #2ecc71; // Zelena za pozitivne akcije
+$danger-color: #e74c3c; // Crvena za odjavu ili upozorenja
+$background-color: #f4f7f6; // Svijetla pozadina za cijelu stranicu
+$container-bg-color: #ffffff; // Bijela za glavni kontejner chata
+$header-bg-color: #ffffff;
+$admin-selection-bg-color: #e9ecef; // Svijetlo siva za odabir admina
+$message-own-bg: #dcf8c6; // Svijetlo zelena za vlastite poruke
+$message-other-bg: #f1f0f0; // Svijetlo siva za tuđe poruke
+$text-color-dark: #333333;
+$text-color-light: #666666;
+$border-color: #dee2e6;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+$border-radius-base: 6px;
+$padding-base: 15px;
+$margin-base: 10px;
+
+// ----- Mixini -----
+@mixin button-base {
+  padding: 10px 20px;
+  border: none;
+  border-radius: $border-radius-base;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease-in-out, opacity 0.2s ease-in-out;
+  text-align: center;
+  font-size: 1rem;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ----- Glavni kontejner -----
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  max-width: 700px;
+  min-height: 80vh; // Minimalna visina da izgleda dobro
+  max-height: 90vh; // Ograničava visinu na većim ekranima
+  margin: 20px auto;
+  background-color: $container-bg-color;
+  border-radius: $border-radius-base * 2;
+  box-shadow: $box-shadow;
+  overflow: hidden; // Osigurava da border-radius utječe na djecu
+}
+
+// ----- Header -----
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: $padding-base ($padding-base * 1.5);
+  background-color: $header-bg-color;
+  border-bottom: 1px solid $border-color;
+
+  h2 {
+    margin: 0;
+    color: $text-color-dark;
+    font-size: 1.6rem;
+  }
+
+  .logout-btn {
+    @include button-base;
+    background-color: $danger-color;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: darken($danger-color, 10%);
+    }
+  }
+}
+
+// ----- Odabir Administratora -----
+.admin-selection {
+  padding: ($padding-base * 2);
+  text-align: center;
+  background-color: $admin-selection-bg-color;
+  flex-grow: 1; // Zauzima prostor ako nema chata
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  h3 {
+    margin-top: 0;
+    margin-bottom: $padding-base * 1.5;
+    color: $text-color-dark;
+    font-size: 1.3rem;
+  }
+
+  .admin-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $margin-base * 1.5;
+    justify-content: center;
+    margin-bottom: $padding-base * 2;
+    max-width: 100%;
+
+    .admin-card {
+      background-color: $container-bg-color;
+      padding: $padding-base;
+      border: 2px solid transparent;
+      border-radius: $border-radius-base;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+      min-width: 180px;
+
+      &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+
+      &.selected {
+        border-color: $primary-color;
+        background-color: lighten($primary-color, 40%);
+        box-shadow: 0 0 0 2px $primary-color;
+      }
+
+      .admin-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+
+        strong {
+          font-size: 1.1rem;
+          color: $text-color-dark;
+        }
+        span {
+          font-size: 0.9rem;
+          color: $text-color-light;
+        }
+      }
+    }
+  }
+
+  .start-chat-btn {
+    @include button-base;
+    background-color: $secondary-color;
+    color: white;
+    padding: 12px 30px;
+    font-size: 1.1rem;
+
+    &:hover:not(:disabled) {
+      background-color: darken($secondary-color, 10%);
+    }
+  }
+}
+
+// ----- Chat Sučelje -----
+.chat-interface {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; // Zauzima preostali prostor
+  overflow: hidden; // Važno za skrolanje
+
+  .conversation-info {
+    padding: ($padding-base * 0.75) $padding-base;
+    background-color: lighten($background-color, 2%);
+    border-bottom: 1px solid $border-color;
+    font-size: 0.9rem;
+    color: $text-color-light;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+      font-weight: 500;
+    }
+    small {
+      font-size: 0.85em;
+    }
+  }
+
+  .messages-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: $padding-base;
+    display: flex;
+    flex-direction: column;
+    gap: $margin-base * 1.2;
+    background-color: $background-color; // Malo drugačija pozadina za poruke
+
+    .message {
+      display: flex;
+      max-width: 75%; // Poruke ne zauzimaju cijelu širinu
+
+      .message-content {
+        padding: ($padding-base * 0.7) $padding-base;
+        border-radius: $border-radius-base * 1.5; // Zaobljenije poruke
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        line-height: 1.4;
+
+        .message-text {
+          margin-bottom: 6px;
+          white-space: pre-wrap; // Čuva nove redove iz textarea
+          font-size: 0.95rem;
+        }
+
+        .message-meta {
+          font-size: 0.75rem;
+          color: darken($text-color-light, 10%);
+          text-align: right;
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          gap: 8px;
+
+          .sender {
+            font-weight: bold;
+          }
+        }
+      }
+
+      &.own-message {
+        align-self: flex-end;
+        .message-content {
+          background-color: $message-own-bg;
+          color: $text-color-dark;
+          border-bottom-right-radius: $border-radius-base * 0.5; // "Tail" efekt
+        }
+      }
+
+      &.other-message {
+        align-self: flex-start;
+        .message-content {
+          background-color: $message-other-bg;
+          color: $text-color-dark;
+          border-bottom-left-radius: $border-radius-base * 0.5; // "Tail" efekt
+        }
+      }
+    }
+  }
+
+  .message-input {
+    display: flex;
+    align-items: flex-end; // Poravnava textarea i gumb
+    padding: $padding-base;
+    border-top: 1px solid $border-color;
+    background-color: $container-bg-color;
+
+    textarea {
+      flex-grow: 1;
+      border: 1px solid $border-color;
+      border-radius: $border-radius-base;
+      padding: 10px;
+      font-family: inherit;
+      font-size: 1rem;
+      resize: none;
+      min-height: 44px; // Prilagođeno za rows="3" i padding
+      max-height: 120px; // Ograničava rast
+      margin-right: $margin-base;
+      line-height: 1.5;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+      &:focus {
+        outline: none;
+        border-color: $primary-color;
+        box-shadow: 0 0 0 2px lighten($primary-color, 35%);
+      }
+    }
+
+    .send-btn {
+      @include button-base;
+      background-color: $primary-color;
+      color: white;
+      flex-shrink: 0; // Sprečava smanjivanje gumba
+
+      &:hover:not(:disabled) {
+        background-color: darken($primary-color, 10%);
+      }
+    }
+  }
+}
+
+// ----- Nema dostupnih administratora -----
+.no-admins {
+  padding: ($padding-base * 3);
+  text-align: center;
+  color: $text-color-light;
+  background-color: $admin-selection-bg-color;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  p {
+    margin-bottom: $padding-base * 1.5;
+    font-size: 1.1rem;
+  }
+
+  .retry-btn {
+    @include button-base;
+    background-color: $secondary-color;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background-color: darken($secondary-color, 10%);
+    }
+  }
+}

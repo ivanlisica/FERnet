@@ -1,0 +1,67 @@
+<div class="chat-container">
+  <div class="chat-header">
+    <h2>Chat podrška</h2>
+    <button (click)="authService.logout()" class="logout-btn">Odjava</button>
+  </div>
+
+  <!-- Odabir administratora ako nema aktivne konverzacije -->
+  <div *ngIf="!currentConversation && availableAdmins.length > 0" class="admin-selection">
+    <h3>Odaberite administratora:</h3>
+    <div class="admin-list">
+      <div *ngFor="let admin of availableAdmins"
+           class="admin-card"
+           [class.selected]="selectedAdmin === admin.username"
+           (click)="selectedAdmin = admin.username">
+        <div class="admin-info">
+          <strong>{{admin.firstName}} {{admin.lastName}}</strong>
+          <span>{{ admin.username }}</span>
+        </div>
+      </div>
+    </div>
+    <button [disabled]="!selectedAdmin || loading"
+            (click)="startConversation()"
+            class="start-chat-btn">
+      {{loading ? 'Pokretanje...' : 'Započni razgovor'}}
+    </button>
+  </div>
+
+  <!-- Chat interface -->
+  <div *ngIf="currentConversation" class="chat-interface">
+    <div class="conversation-info">
+      <span>Razgovor s: {{currentConversation.adminUsername || 'Administrator'}}</span>
+      <small>Započeto: {{currentConversation.createdAt | date:'short'}}</small>
+    </div>
+
+    <div class="messages-container" #messagesContainer>
+      <div *ngFor="let message of messages" class="message"
+           [class.own-message]="message.senderUsername === currentUser?.username"
+           [class.other-message]="message.senderUsername !== currentUser?.username">
+        <div class="message-content">
+          <div class="message-text">{{message.content}}</div>
+          <div class="message-meta">
+            <span class="sender">{{message.senderUsername}}</span>
+            <span class="timestamp">{{message.timestamp | date:'short'}}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="message-input">
+      <textarea [(ngModel)]="newMessage"
+                placeholder="Unesite vašu poruku..."
+                (keypress)="onKeyPress($event)"
+                rows="3"></textarea>
+      <button (click)="sendMessage()"
+              [disabled]="!newMessage.trim()"
+              class="send-btn">
+        Pošalji
+      </button>
+    </div>
+  </div>
+
+  <!-- Nema dostupnih administratora -->
+  <div *ngIf="!currentConversation && availableAdmins.length === 0" class="no-admins">
+    <p>Trenutno nema dostupnih administratora. Molimo pokušajte kasnije.</p>
+    <button (click)="loadAdmins()" class="retry-btn">Osvježi</button>
+  </div>
+</div>

@@ -17,10 +17,10 @@ export class ErrorHandlingService {
     let errorMessage = 'Došlo je do greške. Pokušajte ponovo.';
 
     if (error.error instanceof ErrorEvent) {
-      // Client-side ili network error
+
       errorMessage = `Greška: ${error.error.message}`;
     } else {
-      // Backend error
+
       switch (error.status) {
         case 400:
           errorMessage = 'Neispravni podaci. Proverite unos.';
@@ -47,7 +47,7 @@ export class ErrorHandlingService {
           errorMessage = `Greška ${error.status}: ${error.message}`;
       }
 
-      // Ako server vraća specifičnu poruku
+
       if (error.error?.message) {
         errorMessage = error.error.message;
       }

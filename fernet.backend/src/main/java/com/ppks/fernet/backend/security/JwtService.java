@@ -21,7 +21,7 @@ public class JwtService {
 
     @Value("${application.security.jwt.secret-key}")
     private String secretKey;
-    @Value("3600") // 1 hour in seconds
+    @Value("3600000") // 1 hour in seconds
     private long jwtExpiration;
     @Value("604800") // 7 days in seconds
     private long refreshExpiration;

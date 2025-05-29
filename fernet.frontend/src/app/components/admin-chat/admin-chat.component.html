@@ -1,0 +1,78 @@
+<div class="admin-chat-container">
+  <div class="chat-header">
+    <h2>Administratorski chat</h2>
+    <button (click)="authService.logout()" class="logout-btn">Odjava</button>
+  </div>
+
+  <div class="admin-interface">
+    <!-- Lista konverzacija -->
+    <div class="conversations-panel">
+      <h3>Aktivne konverzacije</h3>
+      <div class="conversations-list">
+        <div *ngFor="let conversation of conversations"
+             class="conversation-item"
+             [class.selected]="selectedConversation?.id === conversation.id"
+             (click)="selectConversation(conversation)">
+          <div class="conversation-info">
+            <strong>{{conversation.clientUsername}}</strong>
+            <span *ngIf="!conversation.adminUsername" class="unclaimed">
+              (Nepreuzeto)
+              <button (click)="claimConversation(conversation); $event.stopPropagation()"
+                      class="claim-btn">Preuzmi</button>
+            </span>
+            <span *ngIf="conversation.adminUsername" class="claimed">
+              Admin: {{conversation.adminUsername}}
+            </span>
+          </div>
+          <div class="conversation-meta">
+            <!-- <small>Zadnja poruka: {{formatDate(conversation.lastMessageAt)}}</small> -->
+          </div>
+        </div>
+      </div>
+      <div *ngIf="conversations.length === 0" class="no-conversations">
+        <p>Nema aktivnih konverzacija</p>
+        <button (click)="loadConversations()" class="refresh-btn">Osvježi</button>
+      </div>
+    </div>
+
+    <!-- Chat panel -->
+    <div class="chat-panel">
+      <div *ngIf="!selectedConversation" class="no-selection">
+        <p>Odaberite konverzaciju za početak chata</p>
+      </div>
+
+      <div *ngIf="selectedConversation" class="chat-interface">
+        <div class="conversation-header">
+          <h4>Razgovor s {{selectedConversation.clientUsername}}</h4>
+          <!-- <small>Započeto: {{formatDate(selectedConversation.createdAt)}}</small> -->
+        </div>
+
+        <div class="messages-container" #messagesContainer>
+          <div *ngFor="let message of messages" class="message"
+               [class.own-message]="message.senderUsername === currentUser.username"
+               [class.other-message]="message.senderUsername !== currentUser.username">
+            <div class="message-content">
+              <div class="message-text">{{message.content}}</div>
+              <div class="message-meta">
+                <span class="sender">{{message.senderUsername}}</span>
+                <span class="timestamp">{{message.timestamp ? formatDate(message.timestamp) : 'N/A'}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="message-input">
+          <textarea [(ngModel)]="newMessage"
+                    placeholder="Unesite odgovor..."
+                    (keypress)="onKeyPress($event)"
+                    rows="3"></textarea>
+          <button (click)="sendMessage()"
+                  [disabled]="!newMessage.trim()"
+                  class="send-btn">
+            Pošalji
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

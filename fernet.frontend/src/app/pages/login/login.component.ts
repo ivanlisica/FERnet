@@ -191,7 +191,7 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe({
         next: () => {
           this.loading = false;
-          this.router.navigate(['/dashboard']); // ili bilo koja ruta nakon uspešne prijave
+          this.router.navigate(['/chat']);
         },
         error: (error) => {
           this.loading = false;

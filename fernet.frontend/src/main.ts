@@ -7,7 +7,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
-import { AuthInterceptor } from './app/services/auth.interceptor';
+import { authInterceptor } from './app/services/auth.interceptor';
 import { AuthService } from './app/services/auth.service';
 import { ErrorHandlingService } from './app/services/error-handling.service';
 import { LoadingService } from './app/services/loading.service';
@@ -19,7 +19,7 @@ bootstrapApplication(AppComponent, {
     importProvidersFrom(ReactiveFormsModule),
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: AuthInterceptor,
+      useValue: authInterceptor,
       multi: true
     },
     AuthService,
@@ -27,3 +27,4 @@ bootstrapApplication(AppComponent, {
     LoadingService
   ]
 }).catch(err => console.error(err));
+(window as any).global = window;
